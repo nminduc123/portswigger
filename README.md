@@ -29,3 +29,18 @@ Khi đấy burp sẽ trả về password:aaaaaa vs status 302 và length 3345
 trở lại lab và nhập username cùng với password để hoàn thành bài lab
 
 ![alt text](images/image-1.png)
+
+
+Lab: 2FA simple bypass
+
+Đăng nhập vào bằng tài khoản wiener
+
+![alt text](images/image-4.png)
+
+Truy cập vào Email Client để lấy mã security
+
+![alt text](images/image-5.png)
+
+Sau đấy Đăng xuất tài khoản cá nhân:wiener và đăng nhập bằng tài khoản carlos. Khi bị hỏi mã xác thực back to labhome và vào lại My Account sẽ thấy đã vượt được xác thực và hoàn thành bài lab
+
+![alt text](images/image-6.png)
