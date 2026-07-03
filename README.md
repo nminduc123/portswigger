@@ -48,25 +48,26 @@ Sau đấy Đăng xuất tài khoản cá nhân:wiener và đăng nhập bằng 
 
 Lab: Password reset broken logic
 
-Sử dụng forgot password và dùng username wiener 
+Sử dụng forgot password và dùng username wiener submit
 
-
+![alt text](images/image-7.png)
 
 Truy cập vào email để lấy link thay đổi password 
 
-
+![alt text](images/image-8.png)
 
 Thay đổi password thành password bản thân muốn và submit.
 
-
+![alt text](images/image-9.png)
 
 Khi này burpsuite sẽ bắt được POST /forgot-password?temp-forgot-password-token
 
+![alt text](images/image-10.png)
 
+Send to Repeter để sửa username từ wiener thành carlos và send
 
-Send to Repeter để sửa username thành carlos và send
-
-
+![alt text](images/image-11.png)
 
 Quay trở lại trang đăng nhập và đăng nhập bằng tài khoản carlos vs password đã đởi và hoàn thành bài lab
 
+![alt text](images/image-12.png)
