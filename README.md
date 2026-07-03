@@ -71,3 +71,34 @@ Send to Repeter để sửa username từ wiener thành carlos và send
 Quay trở lại trang đăng nhập và đăng nhập bằng tài khoản carlos vs password đã đởi và hoàn thành bài lab
 
 ![alt text](images/image-12.png)
+
+
+Lab: Username enumeration via subtly different responses
+
+Đăng nhập bằng 1 tài khoản bất kì
+
+![alt text](image.png)
+
+Khi đấy burpsuite sẽ bắt được POST /login
+
+Send to Intruder clear toàn bộ các đánh dấu Payload chỉ Add vào username
+
+![alt text](image-1.png)
+
+Nạp các username khả thi vào Payload. Vào settings highlight Invalid username or password. Rồi attacks
+
+![alt text](image-2.png)
+
+Sau khi attack burpsuite sẽ trả về 1 warning username khác với phần còn lại thì đấy chính là username cần tìm.
+
+Thay thế username đã biết vào Intruder, đánh dấu Payload password và nạp vào danh sách password khả thi rồi attack
+
+![alt text](image-3.png)
+
+Sau khi attack burp sẽ trả về 1 password vs status 302 
+
+![alt text](image-4.png)
+
+Quay lại trang đăng nhập và sử dụng username cùng với password đã tìm được và hoàn thành bài lab
+
+![alt text](image-5.png)
