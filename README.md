@@ -77,28 +77,28 @@ Lab: Username enumeration via subtly different responses
 
 Đăng nhập bằng 1 tài khoản bất kì
 
-![alt text](image.png)
+![alt text](images/image-13.png)
 
 Khi đấy burpsuite sẽ bắt được POST /login
 
 Send to Intruder clear toàn bộ các đánh dấu Payload chỉ Add vào username
 
-![alt text](image-1.png)
+![alt text](images/image-14.png)
 
 Nạp các username khả thi vào Payload. Vào settings highlight Invalid username or password. Rồi attacks
 
-![alt text](image-2.png)
+![alt text](images/image-15.png)
 
 Sau khi attack burpsuite sẽ trả về 1 warning username khác với phần còn lại thì đấy chính là username cần tìm.
 
 Thay thế username đã biết vào Intruder, đánh dấu Payload password và nạp vào danh sách password khả thi rồi attack
 
-![alt text](image-3.png)
+![alt text](images/image-16.png)
 
 Sau khi attack burp sẽ trả về 1 password vs status 302 
 
-![alt text](image-4.png)
+![alt text](images/image-17.png)
 
 Quay lại trang đăng nhập và sử dụng username cùng với password đã tìm được và hoàn thành bài lab
 
-![alt text](image-5.png)
+![alt text](images/image-18.png)
