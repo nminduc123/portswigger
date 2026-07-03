@@ -44,3 +44,29 @@ Truy cập vào Email Client để lấy mã security
 Sau đấy Đăng xuất tài khoản cá nhân:wiener và đăng nhập bằng tài khoản carlos. Khi bị hỏi mã xác thực back to labhome và vào lại My Account sẽ thấy đã vượt được xác thực và hoàn thành bài lab
 
 ![alt text](images/image-6.png)
+
+
+Lab: Password reset broken logic
+
+Sử dụng forgot password và dùng username wiener 
+
+
+
+Truy cập vào email để lấy link thay đổi password 
+
+
+
+Thay đổi password thành password bản thân muốn và submit.
+
+
+
+Khi này burpsuite sẽ bắt được POST /forgot-password?temp-forgot-password-token
+
+
+
+Send to Repeter để sửa username thành carlos và send
+
+
+
+Quay trở lại trang đăng nhập và đăng nhập bằng tài khoản carlos vs password đã đởi và hoàn thành bài lab
+
