@@ -1,4 +1,4 @@
-Lab: Username enumeration via different responses
+# __Lab: Username enumeration via different responses__
 
 Cấu hình proxy, rồi bật intercept on.
 
@@ -31,7 +31,7 @@ trở lại lab và nhập username cùng với password để hoàn thành bài
 ![alt text](images/image-1.png)
 
 
-Lab: 2FA simple bypass
+# __Lab: 2FA simple bypass__
 
 Đăng nhập vào bằng tài khoản wiener
 
@@ -46,7 +46,7 @@ Sau đấy Đăng xuất tài khoản cá nhân:wiener và đăng nhập bằng 
 ![alt text](images/image-6.png)
 
 
-Lab: Password reset broken logic
+# __Lab: Password reset broken logic__
 
 Sử dụng forgot password và dùng username wiener submit
 
@@ -73,7 +73,7 @@ Quay trở lại trang đăng nhập và đăng nhập bằng tài khoản carlo
 ![alt text](images/image-12.png)
 
 
-Lab: Username enumeration via subtly different responses
+# __Lab: Username enumeration via subtly different responses__
 
 Đăng nhập bằng 1 tài khoản bất kì
 
@@ -102,3 +102,90 @@ Sau khi attack burp sẽ trả về 1 password vs status 302
 Quay lại trang đăng nhập và sử dụng username cùng với password đã tìm được và hoàn thành bài lab
 
 ![alt text](images/image-18.png)
+
+
+# __Lab: Username enumeration via response timing__
+
+Truy cập My Account và đăng nhập bằng 1 tài khoản bất kì invalid để burpsuite có thể bắt được POST /login
+
+![alt text](images/image-19.png)
+
+Send to Intruder đánh dấu vị trí Payload, nạp danh sách Payloas và Attack. khi đấy thấy rằng bài lab sẽ chặn IP nếu như invalid quá nhiều trong 1 thời gian ngắn
+
+![alt text](images/image-20.png)
+
+Send to Intruder và Add thêm X-Forwarded-For vào header, thêm đánh dấu Payload vào địa chỉ X-Forwarded-For
+
+![alt text](images/image-21.png)
+
+Chuyển cách tấn công từ Sniper attack sang Pitchfork attack.
+Khi này Burp sẽ xác định Payload 1: X-Forwarded-For, Payload 2: username
+
+![alt text](images/image-22.png)
+
+Ở Payload 1 sửa lại Type thành number, Cấu hình lại Number range 
+
+![alt text](images/image-23.png)
+
+Add thêm Payload processing chọn rule prefix và thêm 1.1.1. 
+
+![alt text](images/image-24.png)
+
+Ở Payload 2 nạp danh sách username,Sửa password thành 1 chuỗi kí tự dài để máy chủ tốn nhiều thời gian phản hồi, Sửa maximum concurrent requests là 1 rồi attack
+
+![alt text](images/image-25.png)
+
+Thay username đã tìm được và đánh dấu Payload cho password. Nạp danh sách password rồi Attack. Khi đấy sẽ thấy 1 password với status là 302
+
+![alt text](images/image-26.png)
+
+Quay trở lại lab sử dụng username và password đã tìm được để hoàn thành bài lab
+
+![alt text](images/image-27.png)
+
+
+# __Lab: Broken brute-force protection, IP block__
+
+Truy cập My Account và đăng nhập bằng 1 tài khoản invalid để Burpsuite có thể bắt được POST /login và trả về respone
+
+![alt text](images/image-28.png)
+
+Vì bài lab sẽ chặn IP nếu nhập sai quá nhiều lần nên có 2 hướng đi
+### 1. Add X-Forwarded-For và thay đổi IP sau mỗi lần để tránh bị khóa 
+### 2. Dùng spoof để reset sau mỗi lần thử sai
+
+Nhưng vì bài lab muốn hiểu được logic nên dùng cách 2. Tạo danh sách Payload username vs password. 
+
+![alt text](images/image-29.png)
+![alt text](images/image-30.png)
+
+Đánh dấu Payload vào username và password, chuyển từ Sniper attack sang Pitchfork attack, nạp danh sách username và password rồi Attack
+
+![alt text](images/image-31.png)
+
+Khi đấy burp sẽ trả về danh sách tài khoản khả thi. Sử dụng username và password vừa tìm được để đăng nhập và hoàn thành bài lab
+
+![alt text](images/image-32.png)
+
+
+# __Lab: Username enumeration via account lock__
+
+Đăng nhập bằng 1 tài khoản invalid bất kì để Burpsuite có thể bắt được POST /login. Send to Intruder, đánh dấu Payload username và password. Chuyển từ Sniper attack sang cluster bomb, nạp danh sách username ở Payload 1 còn Payload 2 chuyển về Type NULL và set generate 5 payload
+
+![alt text](images/image-33.png)
+
+Attack. Sau khi set generate 5 payload thì burp sẽ lặp lại 1 username 5 lần để xác định được username có tồn tại hay k
+
+![alt text](images/image-34.png)
+
+Thấy được độ dài của username:access dài hơn so với các username khác. Quay trở lại Burpsuite sử dụng username:access nạp danh sách password và attack
+
+![alt text](images/image-35.png)
+
+Burpsuite sẽ trả về password xác định dựa trên độ dài khác.
+
+Quay trở lại bài lab sử dụng username và password vừa tìm được để đăng nhập và hoàn thành bài lab
+
+![alt text](images/image-36.png)
+
+
