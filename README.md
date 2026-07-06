@@ -189,3 +189,24 @@ Quay trở lại bài lab sử dụng username và password vừa tìm được 
 ![alt text](images/image-36.png)
 
 
+# __Lab: 2FA broken logic__
+
+Đăng nhập bằng tài khoản khả dụng wiener:peter 
+
+![alt text](images/image-37.png)
+
+Để burp bắt được GET /login2, Send to Repeater thay đổi cookie từ verify=wiener thành verify=carlos rồi send để server tạo mã xác thực cho account carlos
+
+![alt text](images/image-38.png)
+
+Nhập 1 mã xã thực bất kì để Burp bắt được POST / login2. Send to Intruder thay đổi cookie thành carlos và đánh dấu Payload vào mã mfa
+
+![alt text](images/image-39.png)
+
+Set Payload type thành number cho chạy từ 1 đến 9999 min interger digit là 4 vì mã luôn gồm 4 chữ số rồi attack
+
+![alt text](images/image-40.png)
+
+Burpsuite sẽ trả về 1 mã mfa vs status 302. Send to repeater POST /login2 từ intruder và dùng mã mfa đã tìm được sẽ có response trả về là HTTP/2 302 Found. Open response in browser và hoàn thành bài lab
+
+![alt text](images/image-41.png)
