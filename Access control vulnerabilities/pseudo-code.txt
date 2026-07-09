@@ -1,0 +1,11 @@
+BẮT ĐẦU HÀM KiemTraQuyen_Loi(YeuCauTuTrinhDuyet)
+    // Lấy thông số "Admin" mà trình duyệt gửi lên (bị Burp Suite can thiệp)
+    TrangThaiAdmin = LayThamSo(YeuCauTuTrinhDuyet, "Admin")
+
+    // Lỗi logic: Quyết định quyền dựa trên thông số vừa lấy
+    NẾU TrangThaiAdmin bằng "true" THÌ
+        MoGiaoDienQuanTri()
+    NGƯỢC LẠI
+        HienThiLoi("Bạn không có quyền")
+    KẾT THÚC NẾU
+KẾT THÚC HÀM
