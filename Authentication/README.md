@@ -210,3 +210,118 @@ Set Payload type thành number cho chạy từ 1 đến 9999 min interger digit 
 Burpsuite sẽ trả về 1 mã mfa vs status 302. Send to repeater POST /login2 từ intruder và dùng mã mfa đã tìm được sẽ có response trả về là HTTP/2 302 Found. Open response in browser và hoàn thành bài lab
 
 ![alt text](images/image-41.png)
+
+
+# __Lab: Brute-forcing a stay-logged-in cookie__
+
+Đăng nhập bằng tài khoản khả thi wiener:peter và bật stay-logged-in
+
+![alt text](images/image-42.png)
+
+Burpsuite sẽ bắt được GET /my-account?id=wiener
+
+![alt text](images/image-43.png)
+
+Nhận thấy mã cookie stay logged in được mã hóa Base64. Copy cookie và dán vào decoder 
+
+![alt text](images/image-44.png)
+
+Mã cookie có dạng username:MD5hashpassword. Send to Intruder GET /my-account?id=wiener, gắn đánh dấu Payload cho cookie stay logged in. Nạp danh sách password khả thi, chuyển id từ wiener sang carlos
+
+![alt text](images/image-45.png)
+
+Set thêm vào Payload processing 
+
+![alt text](images/image-46.png)
+
+Add thêm 1 flag Update email trong Grep-Match (vì update email chỉ có thể thấy khi truy cập my account) rồi attack
+
+![alt text](images/image-47.png)
+
+Thấy rằng chỉ duy nhất 1 cookie có Update email. Decode ra sẽ thấy cookie 
+
+![alt text](images/image-48.png)
+
+Sử dụng các công cụ hash decode để có thể biết được password của account carlos
+
+![alt text](images/image-49.png)
+
+Dùng password vừa tìm được để đăng nhập vào account carlos và hoàn thành bài lab
+
+![alt text](images/image-50.png)
+
+
+# __Lab: Offline password cracking__
+
+Đăng nhập bằng account wiener:peter và bật stay logged in để Burpsuite bắt được GET /my-account?id=wiener
+
+![alt text](images/image-51.png)
+
+Nhận thấy mã cookie stay logged in được mã hóa Base64. Copy cookie dán vào decoder và cookie có dạng username:MD5hashpassword
+
+![alt text](images/image-52.png)
+
+Tuy nhiên không thể brute force được vì chưa có danh sách Payload khả thi. Nên dùng XSS để đánh cắp cookie của carlos. Truy cập vào exploite server để lấy được ID server cá nhân. 
+
+![alt text](images/image-53.png)
+
+Viết 1 comment vào blog bất kì XSS payload sử dụng ID server cá nhân rồi đăng lên 
+
+![alt text](images/image-54.png)
+
+Quay trở lại truy cập vào access log của exploite server t sẽ có được cookie stay logged in của carlos 
+
+![alt text](images/image-55.png)
+
+Decode và lấy được mật khẩu của account carlos 
+
+![alt text](images/image-56.png)
+
+![alt text](images/image-57.png)
+
+Sử dụng password đăng nhập vào account carlos, delete account và hoàn thành bài lab
+
+![alt text](images/image-58.png)
+![alt text](images/image-59.png)
+
+
+# __Lab: Password reset poisoning via middleware__
+
+Truy cập vào Forgot password, nhập username wiener. Bật intercept lên trước khi submit để Burpsuite có thể chặn được POST /forgot-password. Vào exploit server và viết 1 script để server sẽ gửi email reset vs link chỉ về exploit server của bản thân.
+
+![alt text](images/image-64.png)
+
+ Send to Repeater POST /forgot-password thêm X-Forwarded-Host và sửa lại id từ wiener thành carlos rồi send
+
+![alt text](images/image-65.png)
+
+Vào email và sử dụng link hướng dẫn thay đổi mật khẩu để Burpsuite bắt được GET /forgot-password?temp-forgot-password-token, Send to repeater để khi lấy được reset token của carlos có thể thay thế token của bản thân. Khi carlos truy cạp vào link đã được gửi qua email và được trả về server truy cập access log t có thể thấy được reset token của carlos.
+
+![alt text](images/image-66.png)
+
+Thay token vừa lấy được vào token của bản thân rồi send
+
+![alt text](images/image-67.png)
+
+Mở response trong browser, thay đổi mật khẩu của carlos và hoàn thành bài lab
+
+![alt text](images/image-68.png)
+
+
+# __Lab: Password brute-force via password change__
+
+Đăng nhập bằng account wiener:peter. Nhập các giá trị vào để đổi password, nhận thấy nếu như nhập 2 giá trị password mới khác nhau server sẽ trả về là new passwword do not match
+
+![alt text](images/image-60.png)
+
+Send to intruder POST /my-account/change-password sửa username từ wiener thành carlos và đánh dấu Payload vào current-password
+
+![alt text](images/image-61.png)
+
+Nạp danh sách Payload mật khẩu khả thi cho acccount carlos. Tô đen New passwords do not match trong Grep-Match để nhận diện. Khi này nếu như 1 password trong danh sách Payload khớp với password hiện tại của carlos thì sẽ có warning là New passwords do not match, nhưng nếu như không giống thì sẽ trả về là Current password is incorrect
+
+![alt text](images/image-62.png)
+
+Đăng xuất khỏi account wiener, dùng mật khẩu và đăng nhập vào account carlos, thay đổi mật khẩu và hoàn thành bài lab
+
+![alt text](images/image-63.png)
