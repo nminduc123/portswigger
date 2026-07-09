@@ -325,3 +325,14 @@ Nạp danh sách Payload mật khẩu khả thi cho acccount carlos. Tô đen Ne
 Đăng xuất khỏi account wiener, dùng mật khẩu và đăng nhập vào account carlos, thay đổi mật khẩu và hoàn thành bài lab
 
 ![alt text](images/image-63.png)
+
+
+# __Broken brute-force protection, multiple credentials per request__
+
+Đăng nhập bằng tài khoản bất kì invalid để Burpsuite có thể bắt được POST /login
+
+![alt text](images/image-69.png)
+
+Send to Repeater sửa username thành carlos nạp danh sách theo dạng mảng vào request và send. Open response in browser và hoàn thành bài lab
+
+![alt text](images/image-70.png)
