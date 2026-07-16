@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎁 Hộp Quà Bí Ẩn</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#5ee7df,#b490ca);
+}
+
+.container{
+    text-align:center;
+}
+
+h2{
+    color:white;
+    margin-top:20px;
+}
+
+.gift{
+    width:220px;
+    cursor:pointer;
+    transition:.3s;
+    animation:float 1.4s infinite ease-in-out;
+}
+
+.gift:hover{
+    transform:scale(1.1);
+}
+
+.hidden{
+    display:none;
+}
+
+.bar{
+    width:320px;
+    height:24px;
+    background:#ddd;
+    border-radius:30px;
+    margin:25px auto;
+    overflow:hidden;
+}
+
+.fill{
+    width:0%;
+    height:100%;
+    background:linear-gradient(90deg,#00e676,#4caf50);
+}
+
+.poop{
+    font-size:180px;
+    animation:drop .8s ease;
+}
+
+button{
+    margin-top:25px;
+    padding:12px 28px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:#ff4081;
+    color:white;
+    font-size:18px;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.confetti{
+    position:fixed;
+    width:10px;
+    height:10px;
+    top:-20px;
+    animation:fall 3s linear forwards;
+}
+
+@keyframes float{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-12px);}
+}
+
+@keyframes drop{
+    from{
+        transform:translateY(-250px) scale(.3) rotate(-180deg);
+        opacity:0;
+    }
+    to{
+        transform:translateY(0) scale(1);
+        opacity:1;
+    }
+}
+
+@keyframes fall{
+    to{
+        transform:translateY(110vh) rotate(720deg);
+        opacity:0;
+    }
+}
+
+@keyframes shake{
+    0%{transform:translateX(-8px);}
+    25%{transform:translateX(8px);}
+    50%{transform:translateX(-8px);}
+    75%{transform:translateX(8px);}
+    100%{transform:translateX(0);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="app">
+
+<div id="gift">
+
+<svg class="gift" viewBox="0 0 200 220">
+<rect x="20" y="70" width="160" height="120" rx="8" fill="#e53935"/>
+<rect x="92" y="70" width="16" height="120" fill="#ffd54f"/>
+<rect x="20" y="115" width="160" height="16" fill="#ffd54f"/>
+<rect x="10" y="40" width="180" height="40" rx="6" fill="#ef5350"/>
+<rect x="92" y="40" width="16" height="40" fill="#ffd54f"/>
+<ellipse cx="82" cy="35" rx="20" ry="12" fill="none" stroke="#ffd54f" stroke-width="8"/>
+<ellipse cx="118" cy="35" rx="20" ry="12" fill="none" stroke="#ffd54f" stroke-width="8"/>
+</svg>
+
+<h2>🎁 Nhấn để mở hộp quà bí ẩn!</h2>
+
+</div>
+
+</div>
+
+<script>
+
+const app=document.getElementById("app");
+
+document.getElementById("gift").onclick=()=>{
+
+app.innerHTML=`
+<h1 style="color:white">🎁 Đang mở hộp quà...</h1>
+
+<div class="bar">
+<div class="fill" id="fill"></div>
+</div>
+
+<h2 id="percent">0%</h2>
+`;
+
+let p=0;
+
+const t=setInterval(()=>{
+
+p++;
+
+document.getElementById("fill").style.width=p+"%";
+document.getElementById("percent").innerHTML=p+"%";
+
+if(p==100){
+
+clearInterval(t);
+
+for(let i=0;i<120;i++){
+
+let c=document.createElement("div");
+c.className="confetti";
+
+c.style.left=Math.random()*100+"vw";
+c.style.background=`hsl(${Math.random()*360},100%,50%)`;
+c.style.animationDuration=1+Math.random()*2+"s";
+
+document.body.appendChild(c);
+
+setTimeout(()=>c.remove(),3000);
+
+}
+
+app.innerHTML=`
+<h1 style="color:white">🎉 Chúc mừng!</h1>
+<h2>Phần quà bí ẩn đã được mở...</h2>
+`;
+
+setTimeout(()=>{
+
+document.body.style.animation="shake .15s 10";
+
+setTimeout(()=>{
+
+app.innerHTML=`
+
+<div class="poop">💩</div>
+
+<h1 style="color:#4b2e00">
+Quà đây 🤣!
+</h1>
+
+<h2 style="color:white">
+Chúc Mừng Sinh Nhật Gâu Linh</b>
+</h2>
+
+<button onclick="location.reload()">
+Mở lại 🔄
+</button>
+
+`;
+
+},1500);
+
+},1500);
+
+}
+
+},30);
+
+}
+
+</script>
+
+</body>
+</html>
