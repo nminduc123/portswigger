@@ -1,3 +1,4 @@
+
 # __Lab: Unprotected admin functionality__
 
 Access Lab, thêm robots.txt vào URL 
@@ -234,6 +235,6 @@ Quay trở lại sửa lại cookie và username thành cookie khi đăng nhập
 
 ![alt text](images/image-50.png)
 
-Lúc đấy account wiener sẽ được upgrade quyền admin và hoàn thành bài lab
+Lúc đấy account wiener sẽ được upgrade quyền admin và hoàn thành bài lab.
 
 ![alt text](images/image-51.png)
