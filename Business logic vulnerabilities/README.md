@@ -142,3 +142,37 @@ Access Lab, đăng nhập bằng account wiener:peter. Mua 1 sản phẩm bất 
 Send GET /cart/order-confirmation?order-confirmed=true để server nhầm và xác định ta đã mua sản phảm và hoàn thành bài lab.
 
 ![alt text](images/image-29.png)
+
+
+# __Authentication bypass via flawed state machine__
+
+Access lab, đăng nhập bằng account wiener:peter. Sau khi đăng nhập nhận thấy cần phải chọn `role` mới có thể truy cập được vào my account. Logout, để thử lại. Bật Intercept và login khi này sau khi Forward login server sẽ chặn GET /role-selector.
+
+![alt text](images/image-30.png)
+
+Nhưng thay vì Forward thử drop để ngăn việc chọn role. Khi này server sẽ drop
+
+![alt text](images/image-31.png)
+
+Thêm /admin vào URL và ta sẽ có thể truy cập vào account của admin. Thực hiện xóa carlos và hoàn thành bài lab.
+
+![alt text](images/image-32.png)
+
+
+# __Infinite money logic flaw__
+
+Access lab, đăng nhập bằng account wiener:peter. Đăng kí email để nhận được mã giám giá. Add mã giảm và thanh toán gift-card. Khi này giftcard đã được giảm giá và chỉ còn 7$
+
+![alt text](images/image-33.png)
+
+Tuy nhiên khi hoàn tác gift-card ở my account ta sẽ thấy được giá trị của gift-card khi hoàn lạ được giữ nguyên là 10$ và tài sản gốc đã đưuọc tăng lên thành 103$
+
+![alt text](images/image-34.png)
+
+Sử dụng Burpsuite macro set up sao cho thứ tự lần lượt là thêm gift-card, add mã giảm giá, thanh toán, xác nhận thanh toán, hoàn tác gift-card.
+
+![alt text](images/image-35.png)
+
+Sử dụng Intruder để tạo vòng lặp vô hạn cho đến khi tổng tài sản đủ khả năng mua áo thì tiến hành thanh toán và hoàn thành bài lab.
+
+![alt text](images/image-36.png)
