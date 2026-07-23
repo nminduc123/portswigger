@@ -1,3 +1,26 @@
+# Mục Lục
+
+1. [Lab: Excessive trust in client-side controls](#lab-excessive-trust-in-client-side-controls)
+
+2. [Lab: High-level logic vulnerability](#lab-high-level-logic-vulnerability)
+
+3. [Lab: Inconsistent security controls](#lab-inconsistent-security-controls)
+
+4. [Lab: Flawed enforcement of business rules](#lab-flawed-enforcement-of-business-rules)
+
+5. [Lab: Low-level logic flaw](#lab-low-level-logic-flaw)
+
+6. [Lab: Inconsistent handling of exceptional input](#lab-inconsistent-handling-of-exceptional-input)
+
+7. [Lab: Weak isolation on dual-use endpoint](#lab-weak-isolation-on-dual-use-endpoint)
+
+8. [Lab: Insufficient workflow validation](#lab-insufficient-workflow-validation)
+
+9. [Authentication bypass via flawed state machine](#authentication-bypass-via-flawed-state-machine)
+
+10. [Infinite money logic flaw](#infinite-money-logic-flaw)
+---
+
 # __Lab: Excessive trust in client-side controls__
 
 Access Lab, đăng nhập bằng account wiener:peter. Bật Intercept trên BurpSuite để có thể chặn được POST /cart khi thêm áo l33t vào giỏ hàng.
