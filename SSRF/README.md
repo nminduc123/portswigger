@@ -1,3 +1,18 @@
+# Mục lục
+
+1. [Lab: Basic SSRF against the local server](#lab-basic-ssrf-against-the-local-server)
+
+2. [Lab: Basic SSRF against another back-end system](#lab-basic-ssrf-against-another-back-end-system)
+
+3. [Lab: Blind SSRF with out-of-band detection](#lab-blind-ssrf-with-out-of-band-detection)
+
+4. [Lab: SSRF with blacklist-based input filter](#lab-ssrf-with-blacklist-based-input-filter)
+
+5. [Lab: SSRF with filter bypass via open redirection vulnerability](#lab-ssrf-with-filter-bypass-via-open-redirection-vulnerability)
+
+6. [Lab: SSRF with whitelist-based input filter](#lab-ssrf-with-whitelist-based-input-filter)
+---
+
 # __Lab: Basic SSRF against the local server__
 
 Access Lab, vào 1 sản phẩm bất kì và check stock để Burpsuite có thể bắt được POST /product/stock
