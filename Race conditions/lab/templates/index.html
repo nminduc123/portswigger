@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab: Bypassing rate limits via race conditions</title>
+    <style>
+        .error { color: red; font-weight: bold; }
+        .success { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Lab: Bypassing rate limits via race conditions</h2>
+    
+    <!-- Vùng hiển thị thông báo trả về từ Server -->
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    
+    {% if success %}
+        <p class="success">{{ success }}</p>
+    {% endif %}
+
+    <form action="/login" method="POST">
+        <label>Username:</label><br>
+        <input type="text" name="username"><br><br>
+        
+        <label>Password:</label><br>
+        <input type="password" name="password"><br><br>
+        
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>
