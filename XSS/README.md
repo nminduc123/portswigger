@@ -178,3 +178,22 @@ Lúc này trên giao diện, tên bình luận của bạn đã trở thành m�
 ![alt text](images/image-21.png)
 
 
+# __Lab: Reflected XSS into a JavaScript string with angle brackets HTML encoded__
+
+Access Lab, sử dụng chức năng tìm kiếm. Thử nhập một đoạn payload cơ bản như `<script>alert(1)</script>` và kiểm tra mã nguồn trang.
+
+![alt text](images/image-24.png)
+
+Khi này nhận thấy máy chủ đã HTML-encoded các dấu `<` và `>`, ngăn chặn việc tạo thẻ mới. Tuy nhiên, từ khóa tìm kiếm lại được chèn trực tiếp vào bên trong một biến kiểu chuỗi (string) của đoạn mã JavaScript hiện có: `var searchTerms = 'từ-khóa';`.
+
+![alt text](images/image-25.png)
+
+Do không thể thoát ra khỏi thẻ `<script>`, ta cần thực thi mã ngay bên trong context của JavaScript. Tiến hành thay đổi từ khóa tìm kiếm thành Payload: `'-alert(1)-'` và ấn Search.
+
+![alt text](images/image-26.png)
+
+Payload này sử dụng dấu nháy đơn `'` đầu tiên để đóng chuỗi hiện tại của máy chủ. Sau đó, nó sử dụng toán tử trừ `-` để nối các thành phần lại thành một biểu thức toán học. Mã thực tế sinh ra là: `var searchTerms = ''-alert(1)-'';`.
+
+Để tính toán biểu thức này, trình duyệt bắt buộc phải thực thi hàm `alert(1)`, làm xuất hiện pop-up và hoàn thành bài lab.
+
+![alt text](images/image-27.png)
