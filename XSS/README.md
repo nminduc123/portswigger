@@ -197,3 +197,118 @@ Payload này sử dụng dấu nháy đơn `'` đầu tiên để đóng chuỗi
 Để tính toán biểu thức này, trình duyệt bắt buộc phải thực thi hàm `alert(1)`, làm xuất hiện pop-up và hoàn thành bài lab.
 
 ![alt text](images/image-27.png)
+
+
+# __Lab: DOM XSS in document.write sink using source location.search inside a select element__
+
+Access Lab, truy cập vào chức năng View details của một sản phẩm bất kỳ. Kéo xuống phần Check stock.
+
+
+
+Kiểm tra URL hoặc mã nguồn trang web (F12), nhận thấy chức năng kiểm tra hàng tồn kho sử dụng đoạn mã JavaScript lấy tham số `storeId` từ URL (thông qua `location.search`) và dùng hàm `document.write()` để in trực tiếp giá trị này vào bên trong thẻ `<select>` và `<option>`.
+
+![alt text](images/image-28.png)
+
+Do không có cơ chế lọc dữ liệu (sanitize) và vị trí chèn nằm bên trong thẻ `<select>`, ta cần đóng các thẻ này lại trước khi kích hoạt mã độc. Thay đổi URL, thêm tham số `storeId` với payload: `?storeId=</option></select><script>alert(1)</script>` và ấn Enter.
+
+![alt text](images/image-29.png)
+
+Đoạn mã HTML được render sẽ biến thành: 
+`<option selected></option></select><script>alert(1)</script></option>`
+
+Thẻ `<script>` đã thoát ra ngoài cấu trúc `<select>` thành công. Trình duyệt ngay lập tức thực thi đoạn mã JavaScript, làm xuất hiện hộp thoại pop-up `alert(1)` và hoàn thành bài lab.
+
+![alt text](images/image-30.png)
+
+
+# __Lab: DOM XSS in AngularJS expression with angle brackets and double quotes HTML-encoded__
+
+Access Lab, truy cập ô tìm kiếm. Kiểm tra mã nguồn trang web nhận thấy ứng dụng có nhúng thư viện `angular.js` và thẻ `<body>` có chứa directive `ng-app`.
+
+![alt text](images/image-31.png)
+
+Thử nhập một đoạn payload chứa ký tự `< >` hoặc `"`. Nhận thấy máy chủ đã HTML-encoded các ký tự này, ngăn chặn việc tạo thẻ mới. Tuy nhiên, do ứng dụng sử dụng AngularJS (`ng-app` bao phủ toàn bộ body), bất kỳ biểu thức nào nằm trong cặp ngoặc nhọn `{{ }}` sẽ được AngularJS tự động giải mã (decode) và thực thi (evaluate).
+
+Sử dụng kỹ thuật Angular Sandbox Bypass (áp dụng cho các phiên bản Angular 1.6+). Nhập vào ô tìm kiếm payload sau: 
+`{{$on.constructor('alert(1)')()}}` 
+và bấm Search.
+
+![alt text](images/image-32.png)
+
+Trên giao diện, mã HTML phản xạ lại là `{{$on.constructor(&apos;alert(1)&apos;)()}}`. Tuy nhiên, AngularJS đã tự động giải mã `&apos;` thành `'`, sau đó đọc biểu thức bên trong ngoặc nhọn `{{ }}`. 
+
+Payload sử dụng `.constructor` để truy cập vào hàm tạo `Function` của JavaScript, từ đó cho phép thực thi chuỗi `'alert(1)'` dưới dạng mã code. Lệnh JavaScript được kích hoạt, hiển thị pop-up và hoàn thành bài lab.
+
+![alt text](images/image-33.png)
+
+
+# __Lab: Reflected DOM XSS__
+
+Access Lab, sử dụng thanh tìm kiếm trên trang chủ. Bật F12 sang tab Network để quan sát luồng dữ liệu.
+
+![alt text](images/image-34.png)
+
+Nhận thấy ứng dụng không tải lại trang mà gọi một tệp JavaScript (`searchResults.js`). Tệp này gửi một request XHR đến endpoint `/search-results?search=...` và nhận về phản hồi dưới dạng chuỗi JSON chứa từ khóa tìm kiếm.
+
+![alt text](images/image-35.png)
+
+Kiểm tra tệp `searchResults.js`, phát hiện mã nguồn phía client sử dụng hàm `eval()` để phân tích cú pháp (parse) chuỗi JSON trả về từ máy chủ. Đây là một Sink cực kỳ nguy hiểm.
+
+Máy chủ có cơ chế phòng thủ bằng cách tự động thêm ký tự escape `\` trước các dấu ngoặc kép `"`. Ta tiến hành khai thác bằng cách lợi dụng chính cơ chế này để vô hiệu hóa dấu gạch chéo của máy chủ. 
+
+![alt text](images/image-36.png)
+
+Thay đổi từ khóa tìm kiếm thành Payload: `\"-alert(1)}//` và bấm Search.
+
+![alt text](images/image-37.png)
+
+Payload của ta chứa sẵn một dấu `\`. Khi máy chủ tự động escape, nó biến thành `\\"`. Hàm `eval()` trên trình duyệt khi xử lý sẽ coi `\\` là ký tự gạch chéo thông thường, từ đó giải phóng dấu `"` phía sau, cho phép đóng chuỗi JSON sớm. 
+
+Mã JavaScript `alert(1)` ngay lập tức được thực thi trong quá trình tính toán biểu thức, phần còn lại bị vô hiệu hóa bởi `//`. Hộp thoại pop-up xuất hiện và hoàn thành bài lab.
+
+![alt text](images/image-38.png)
+
+
+# __Lab: Stored DOM XSS__
+
+Access Lab, truy cập vào một bài blog bất kỳ và kéo xuống phần chức năng Leave a comment. Bật F12 kiểm tra mã nguồn phía client.
+
+![alt text](images/image-39.png)
+
+Nhận thấy trang web cố gắng ngăn chặn XSS bằng cách sử dụng hàm `replace()` của JavaScript để mã hóa các ký tự ngoặc nhọn `< >`. Tuy nhiên, do lập trình viên chỉ truyền vào một chuỗi (string) thay vì biểu thức chính quy (Regex) với cờ `g` (global), hàm này **chỉ thay thế (encode) cặp dấu ngoặc nhọn đầu tiên** mà nó gặp.
+
+Tiến hành khai thác bằng cách đặt một cặp ngoặc nhọn "chim mồi" lên trước để hàm `replace()` xử lý, bảo toàn nguyên vẹn cho thẻ mã độc ở phía sau. Điền payload sau vào ô Comment: `<><img src=1 onerror=alert(1)>`. 
+
+Điền các trường Name, Email, Website và bấm Post Comment.
+
+![alt text](images/image-40.png)
+
+Quay trở lại trang bài viết (Bấm Back to blog). Lúc này, cặp ngoặc `<>` đầu tiên đã bị mã hóa, nhưng thẻ `<img>` phía sau không bị ảnh hưởng và được render thành công trên DOM. Trình duyệt tải hình ảnh lỗi, kích hoạt sự kiện `onerror` và thực thi `alert(1)`, làm xuất hiện hộp thoại pop-up và hoàn thành bài lab.
+
+![alt text](images/image-41.png)
+
+
+# __Lab: Reflected XSS into HTML context with most tags and attributes blocked__
+
+Access Lab, tìm kiếm một payload cơ bản như `<img src=1 onerror=print()>`. Nhận thấy request bị tường lửa (WAF) chặn và trả về lỗi 400 (Bad Request).
+
+![alt text](images/image-42.png)
+
+Để kiểm tra xem thẻ HTML nào được phép đi qua tường lửa, dùng Burp Suite chặn request tìm kiếm và Send to Intruder. Đổi tham số thành `<§§>` và sử dụng danh sách Tags từ XSS cheat sheet để tấn công. Kết quả trả về cho thấy có thẻ `<body>` và `xss` nhận được HTTP 200 OK.
+
+![alt text](images/image-44.png)
+
+Tiếp tục tìm kiếm thuộc tính (attribute) được phép bằng cách đổi tham số search trong Intruder thành `<body%20§§=1>`. Sử dụng danh sách Events từ XSS cheat sheet. Kết quả cho thấy có các sự kiện vượt qua được bộ lọc.
+
+![alt text](images/image-45.png)
+
+Lúc này ta đã có payload hợp lệ là `<body onresize=print()>`. Để kích hoạt sự kiện `onresize` một cách tự động khi nạn nhân truy cập, ta cần dùng một thẻ `iframe`. Nhấp vào **Go to exploit server** và dán đoạn mã sau vào ô Body:
+
+```html
+<iframe src="https://https://0a55008e0315370181eb031b00bf00db.web-security-academy.net/?search=%22%3E%3Cbody%20onresize=print()%3E" onload=this.style.width='100px'>
+```
+![alt text](images/image-47.png)
+
+Delivery to victim và hoàn thành lab
+
+![alt text](images/image-48.png)
