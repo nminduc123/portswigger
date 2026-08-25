@@ -42,6 +42,38 @@
 
 21. [Lab: Reflected XSS into a template literal with angle brackets, single, double quotes, backslash and backticks Unicode-escaped](#lab-reflected-xss-into-a-template-literal-with-angle-brackets-single-double-quotes-backslash-and-backticks-unicode-escaped)
 ---
+1. Bản chất cốt lõi của XSS
+XSS là lỗ hổng xảy ra khi ứng dụng web cho phép chèn các đoạn mã độc (thường là JavaScript) vào trong giao diện HTML và ép trình duyệt của người dùng thực thi nó.
+
+Nguyên nhân gốc rễ đến từ sự chủ quan của lập trình viên: Tin tưởng tuyệt đối vào dữ liệu đầu vào (User Input) và thiếu bước mã hóa đầu ra (Output Encoding).
+
+2. Phân loại 3 hình thức XSS chính
+Reflected XSS (XSS Phản xạ): Lỗi do Backend. Hacker chèn mã độc vào một đường link URL. Khi nạn nhân click vào link, Server nhận Request và lập tức "dội ngược" đoạn mã đó vào HTTP Response. Trình duyệt nhận được và lập tức chạy mã độc.
+
+Stored XSS (XSS Lưu trữ): Lỗi do Backend. Hacker gửi mã độc (ví dụ: qua bình luận, bài viết) và Server lưu nó thẳng vào Database. Bất kỳ ai truy cập vào trang chứa bình luận đó đều bị Server trả về mã độc. Đây là loại nguy hiểm nhất vì tính lây lan diện rộng.
+
+DOM-based XSS (XSS dựa trên DOM): Lỗi 100% do Front-end (JavaScript). Quá trình xử lý mã độc diễn ra hoàn toàn trên trình duyệt mà Server không hề hay biết. Mã độc đi từ Nguồn cấp dữ liệu (Source) chui thẳng vào Điểm thực thi (Sink - ví dụ innerHTML) do code JS thiếu bước lọc.
+
+3. Mục tiêu và Hậu quả (Nạn nhân bị gì?)
+Hacker khai thác lỗ hổng trên web, nhưng người lãnh hậu quả trực tiếp là người dùng. Khi mã độc chạy trên trình duyệt, hacker có thể:
+
+Đánh cắp phiên đăng nhập (Session Hijacking): Lấy trộm Cookie và chiếm quyền tài khoản mà không cần mật khẩu.
+
+Tự động thực hiện thao tác trái phép: Ép trình duyệt tự động đổi mật khẩu, chuyển tiền hoặc cấp quyền cho hacker ở dưới nền.
+
+Lừa đảo giao diện (Phishing): Dùng JavaScript vẽ đè một form đăng nhập giả mạo lên trang web thật để lừa nạn nhân gõ dữ liệu nhạy cảm.
+
+4. Cách phòng thủ và vá lỗi (Mitigation)
+Để diệt trừ tận gốc XSS, hệ thống cần áp dụng các lớp bảo mật sau:
+
+Output Encoding (Mã hóa đầu ra): Tuyệt chiêu cốt lõi nhất. Trước khi in dữ liệu ra màn hình, phải biến đổi các ký tự nguy hiểm thành dạng HTML Entities (ví dụ < thành &lt;).
+
+Input Validation (Kiểm tra đầu vào): Áp dụng Whitelist để chặn các dữ liệu sai định dạng trước khi hệ thống kịp xử lý.
+
+Sử dụng Framework hiện đại và Sink an toàn: Dùng React, Vue vì chúng có cơ chế tự động mã hóa dữ liệu. Với code thuần, luôn ưu tiên dùng các Sink như textContent thay vì innerHTML.
+
+Content Security Policy (CSP): Thiết lập Header trên Server để ra lệnh cho trình duyệt cấm chạy các đoạn Inline Scripts và chỉ cho phép tải script từ các nguồn uy tín.
+
 # __Lab: Reflected XSS into HTML context with nothing encoded__
 
 Access Lab, trên trang chủ nhận thấy có một ô tìm kiếm (Search the blog...). Nhập đoạn payload `<script>alert(1)</script>` vào ô tìm kiếm và bấm Search.
