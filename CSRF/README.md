@@ -1,3 +1,6 @@
+# CSRF là gì?
+CSRF là một lỗ hổng bảo mật web cho phép kẻ tấn công dụ dỗ người dùng thực hiện các hành động mà họ không có ý định thực hiện. Nó cho phép kẻ tấn công phần nào vượt qua chính sách cùng nguồn gốc, được thiết kế để ngăn chặn các trang web khác nhau can thiệp lẫn nhau.
+
 # __Lab: CSRF vulnerability with no defenses__
 Access lab, theo như đề bài thì lab này có 1 lỗ hổng csrf ở việc `change email`. Đăng nhập bằng account `wiener:peter` và đổi `email`. Sử dụng Burpsuite để bắt được request `/my-account/change-email`
 
