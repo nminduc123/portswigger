@@ -2,6 +2,13 @@
 
 CORS là một cơ chế của trình duyệt cho phép truy cập có kiểm soát vào các tài nguyên nằm ngoài một miền nhất định. Nó mở rộng và tăng tính linh hoạt cho chính sách cùng nguồn gốc
 
+### CORS xuất hiện lỗ hổng khi mà một ứng dụng cấu hình quá rộng rãi và cho phép truy cập dữ liệu
+
+### Cách phòng tránh:
+1. Whitelist những trang thực sự cần thiết
+2. hông dùng `credentials` nếu không cần
+3. Không thống báo phản chiếu Origin
+
 # __Lab: CORS vulnerability with basic origin reflection__
 Access Lab, đăng nhập bằng tài khoản wiener:peter được cung cấp và sử dụng burpsute để bắt được các reqquest gửi đi.
 
