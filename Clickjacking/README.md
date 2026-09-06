@@ -1,6 +1,12 @@
 # Clickjacking là gì
 Clickjacking là một hình thức tấn công dựa trên giao diện, trong đó người dùng bị lừa nhấp vào nội dung có thể tương tác trên một trang web ẩn bằng cách nhấp vào nội dung khác trên một trang web giả mạo.
 
+### Clickjacking xảy ra khi Website cho phép nó được nhúng bên trong `<iframe>` của website khác
+
+### Cách phòng tránh:
+1. Chỉ cho phép 1 origin cụ thể
+2. Không cho phép trang nhúng iframe 
+
 # __Lab: Basic clickjacking with CSRF token protection__
 Access Lab, đăng nhập bằng tài khoản được cung cấp wiener:peter. Để hoàn thành được bài lab thì cần khiến cho tài khoản `victim` bị xóa.
 
