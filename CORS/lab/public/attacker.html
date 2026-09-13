@@ -1,0 +1,116 @@
+<!doctype html>
+
+<meta charset="utf-8">
+
+<title>Attacker Panel</title>
+
+<style>
+    body {
+        font-family: Arial;
+        max-width: 900px;
+        margin: 40px auto;
+    }
+
+    .step {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 18px;
+        margin: 15px 0;
+    }
+
+    button {
+        padding: 12px 18px;
+    }
+</style>
+
+<h1>Attacker Panel</h1>
+
+<div class="step">
+
+    <h2>
+        1. Discover with Burp
+    </h2>
+
+    <p>
+        Log in as
+        <b>attack / attack123</b>,
+        capture
+        <code>
+            GET /api/accountDetails
+        </code>,
+        then set:
+    </p>
+
+    <pre>Origin: null</pre>
+
+    <p>
+        Expected vulnerable response:
+    </p>
+
+    <pre>Access-Control-Allow-Origin: null
+Access-Control-Allow-Credentials: true</pre>
+
+</div>
+
+<div class="step">
+
+    <h2>
+        2. Send exploit to victim
+    </h2>
+
+    <p>
+        Keep the victim logged in at
+        <code>
+            https://localhost:3000/account
+        </code>.
+    </p>
+
+    <button id="send">
+        Send security alert / exploit
+    </button>
+
+    <p id="status"></p>
+
+</div>
+
+<div class="step">
+
+    <h2>
+        3. Payload
+    </h2>
+
+    <p>
+        The exploit uses a sandboxed iframe
+        whose document has an opaque
+        <code>null</code> origin.
+    </p>
+
+    <a href="/malicious.html">
+        Open exploit directly
+    </a>
+
+</div>
+
+<script>
+
+document.getElementById(
+    "send"
+).onclick = async () => {
+
+    const r = await fetch(
+        "/send-exploit",
+        {
+            method: "POST"
+        }
+    );
+
+    if (r.ok) {
+
+        document.getElementById(
+            "status"
+        ).textContent =
+            "✓ Exploit notification sent to the local victim.";
+    }
+};
+
+</script>

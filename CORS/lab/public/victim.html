@@ -1,0 +1,168 @@
+<!doctype html>
+
+<meta charset="utf-8">
+
+<title>Local Account</title>
+
+<style>
+    body {
+        font-family: Arial;
+        max-width: 850px;
+        margin: 40px auto;
+    }
+
+    .card,
+    .alert {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 18px;
+        margin: 15px 0;
+    }
+
+    .alert {
+        display: none;
+        border: 2px solid #b00;
+        background: #fff3f3;
+    }
+
+    .btn {
+        display: inline-block;
+        background: #b00;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 7px;
+        text-decoration: none;
+    }
+</style>
+
+<h1>Account</h1>
+
+<div class="card">
+
+    <p>
+        You are logged in as:
+        <strong id="username">Loading...</strong>
+    </p>
+
+    <p>
+        Keep this tab open.
+    </p>
+
+</div>
+
+<div id="alert" class="alert">
+
+    <h2>
+        ⚠️ Account Security Alert
+    </h2>
+
+    <p id="msg"></p>
+
+    <a
+        id="protect"
+        class="btn"
+    >
+        Protect your account
+    </a>
+
+</div>
+
+<div class="card">
+
+    <p>
+        Local lab only.
+        The notification is delivered by polling;
+        no real email is used.
+    </p>
+
+</div>
+
+<script>
+
+let last = 0;
+
+async function loadUser() {
+
+    try {
+
+        const r = await fetch(
+            "/api/me",
+            {
+                credentials: "include",
+                cache: "no-store"
+            }
+        );
+
+        if (!r.ok) {
+            return;
+        }
+
+        const data = await r.json();
+
+        document.getElementById(
+            "username"
+        ).textContent = data.username;
+
+    } catch (e) {
+
+        console.error(e);
+
+    }
+}
+
+async function poll() {
+
+    try {
+
+        const r = await fetch(
+            "/api/notification",
+            {
+                credentials: "include",
+                cache: "no-store"
+            }
+        );
+
+        if (!r.ok) {
+            return;
+        }
+
+        const n = await r.json();
+
+        if (
+            n.id &&
+            n.id !== last &&
+            n.exploitUrl
+        ) {
+
+            last = n.id;
+
+            document.getElementById(
+                "msg"
+            ).textContent = n.message;
+
+            document.getElementById(
+                "protect"
+            ).href = n.exploitUrl;
+
+            document.getElementById(
+                "alert"
+            ).style.display = "block";
+        }
+
+    } catch (e) {
+
+        console.error(e);
+
+    }
+}
+
+loadUser();
+
+setInterval(
+    poll,
+    1000
+);
+
+poll();
+
+</script>
