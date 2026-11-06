@@ -194,7 +194,7 @@ C:\tools\php\php.exe -r "echo hash_hmac('sha1', 'Tzo0NzoiU3ltZm9ueVxDb21wb25lbnR
 
 # __Lab: Exploiting Ruby deserialization using a documented gadget chain__
 
-## 
+## Logic lỗ hổng Hàm Marshal.load() của Ruby không an toàn khi xử lý dữ liệu từ client. Lợi dụng các class mặc định của Ruby Core ép gọi phương thức Kernel.system("rm /home/carlos/morale.txt")
 
 Access lab, đăng nhập bằng account được cung cấp wiener:peter. Nhận thấy giá trị cookie đang được set dưới dạng Ruby dựa trên các kí tự ban đầu được sử dụng như `BAh..`
 
