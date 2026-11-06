@@ -1,0 +1,60 @@
+<!doctype html>
+
+<meta charset="utf-8">
+
+<title>Local Login</title>
+
+<style>
+    body {
+        font-family: Arial;
+        max-width: 520px;
+        margin: 60px auto;
+    }
+
+    input,
+    button {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+        margin: 8px 0;
+    }
+
+    .hint {
+        background: #eee;
+        padding: 12px;
+    }
+</style>
+
+<h1>Local Account Login</h1>
+
+<form method="POST" action="/login">
+
+    <label>Username</label>
+
+    <input
+        name="username"
+        required
+    >
+
+    <label>Password</label>
+
+    <input
+        type="password"
+        name="password"
+        required
+    >
+
+    <button>
+        Login
+    </button>
+
+</form>
+
+<div class="hint">
+    Lab accounts:
+    <br>
+    attack / attack123
+    <br>
+    victim / victim123
+</div>

