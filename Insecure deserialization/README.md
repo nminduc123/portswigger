@@ -1,3 +1,20 @@
+# __Insecure deserialization là gì:__
+1. serialization là quá trình lưu trữ dữ liệu, trang thái dưới các dạng file, bin, db. Chúng có thể chuyển đổi cấu trúc thành dạng có thể truyền tải và được mã hóa
+
+2. deserialization là quá trình chuyển đổi từ những định dạng nhận được về đinh dạng gốc    
+__nói chung se-de là quá trình phân mảnh và tái tổ hợp dữ liệu__
+
+3. Insecure deserialization là khi mà attacker sửa đổi dữ liệu sẽ đc tái tổ hợp của ứng dụng để ép server thực thi.
+
+4. Quá trình:
+    
+    * Đi qua mạng: Object đã được sửa đổi đc gửi đến web server để xử lí
+    * Bộ thông dịch đọc và lưu trữ vào RAM
+    * Các Magic Methods tự động gọi thực hiện các hàm như `_destruct`, `exec()`
+    * Kernel Level chuyển các hành động xuống cho hệ điều hành thực hiện
+
+    
+
 # __Lab: Modifying serialized objects__
 
 ## Logic lỗ hổng của bài này sẽ nằm ở việc backend đang sử dụng các thông tin được mã hóa để set cho cookie và khi attacker sửa đổi thông tin của cookie server đọc và trục tiếp thực hiện.
