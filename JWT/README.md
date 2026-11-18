@@ -1,15 +1,50 @@
 # __JWT là gì__
-### JWT là 1 giá trị cookie lưu trữ thông tin của người dùng và chữ kí của server(thẻ VIP) khi cần gửi req thì đưua thẻ là k ai hỏi j cả.
+### JWT là 1 giá trị cookie lưu trữ thông tin của người dùng và chữ kí của server (thẻ VIP), khi gửi request thì đưa thẻ ra là server nhận diện danh tính ngay.
 
 # __JWT attack__
-### JWT attack là khi làm giả vé VIP 
+### JWT attack là việc tìm cách làm giả hoặc chỉnh sửa thông tin trên "vé VIP" mà server vẫn chấp nhận.
 
-## FORMAT: JWT có 3 phần được chia cắt bởi dấu `.` bào gồm header, payload, signature.
+## FORMAT: JWT gồm 3 phần ngăn cách bởi dấu `.`: `HEADER.PAYLOAD.SIGNATURE`
 
-## Các nhánh khác:
-1. JWS(JSON Web Signature): ai cũng mở ra xem được payload nếu biết cách giải mã Base64
-2. JWE(JSON Web Encryption): mã hóa thành 1 chuỗi riêng cần có key mới giả mã đọc được
-3. JWK(JSON Web Key): 1 định dạng chuẩn để biểu diễn mã khóa
+1. **Header (Đầu thẻ)**: Chứa thông tin về loại token và thuật toán ký.
+   - `alg` (Algorithm): Thuật toán dùng để ký (ví dụ: `HS256`, `RS256`, `none`).
+   - `typ` (Type): Loại token, thường là `JWT`.
+   - `kid` (Key ID): ID của chiếc chìa khóa dùng để ký (server dùng để chọn đúng chìa khi có nhiều chìa).
+   - `jwk` (JSON Web Key): Nhúng trực tiếp một public key vào header.
+   - `jku` (JWK Set URL): Đường dẫn URL để server tải danh sách public key về xác thực.
+
+2. **Payload (Thân thẻ - Dữ liệu)**: Chứa thông tin người dùng (Claims). Phần này **chỉ encode Base64url chứ KHÔNG hề mã hóa**, ai cũng dịch ngược ra đọc được.
+   - `sub` (Subject): Định danh người dùng (thường là username hoặc user ID).
+   - `role`: Quyền hạn (admin, user...).
+   - `exp` (Expiration Time): Thời gian hết hạn của token.
+   - `iss` (Issuer): Đơn vị phát hành token.
+
+3. **Signature (Chữ ký của Server)**:
+   - Được tạo bằng cách lấy: `Hash(Header + "." + Payload, Secret_Key)`.
+   - Mục đích: Đảm bảo dữ liệu trong Payload không bị chỉnh sửa. Nếu sửa 1 ký tự trong Payload mà không có Secret Key để ký lại, chữ ký sẽ không khớp và server từ chối.
+
+---
+
+## Các khái niệm liên quan:
+1. **JWS (JSON Web Signature)**: Token có chữ ký (đây chính là loại JWT phổ biến nhất ta hay gặp). Payload mở xem được bình thường nếu Base64 decode.
+2. **JWE (JSON Web Encryption)**: Token bị mã hóa toàn bộ nội dung, chỉ ai cầm private key mới giải mã đọc được payload.
+3. **JWK (JSON Web Key)**: Định dạng chuẩn biểu diễn một khóa mã hóa (public/private key) dưới dạng JSON thay cho file `.pem`.
+   - `kty` (Key Type): Loại thuật toán của chìa (`RSA`, `EC`, `oct` - đối xứng).
+   - `use` (Key Use): Mục đích (`sig` để ký/check chữ ký, `enc` để mã hóa).
+   - `kid` (Key ID): Tên định danh của chìa.
+   - `n` (Modulus) & `e` (Exponent): Cặp thông số tạo nên **RSA Public Key** (dùng để kiểm tra chữ ký).
+   - `d` (Private Exponent): Số mũ bí mật tạo nên **RSA Private Key** (dùng để ký, phải bảo mật tuyệt đối).
+
+---
+
+## Tổng quan các dạng lỗ hổng JWT thường gặp:
+- **Unverified signature**: Server chỉ decode payload để lấy username mà hoàn toàn quên kiểm tra chữ ký.
+- **Flawed signature verification (`alg: none`)**: Server chấp nhận token không có chữ ký khi client đổi thuật toán thành `none`.
+- **Weak HMAC secret**: Server dùng secret key quá đơn giản (như `secret`, `123456`) $\rightarrow$ bị brute-force bằng hashcat để tìm ra key rồi tự ký token mới.
+- **JWK header injection**: Server tin tưởng và dùng luôn chiếc public key được nhúng trong tham số `jwk` ở header do client gửi lên.
+- **JKU header injection**: Server tự động truy cập vào URL trong tham số `jku` để tải public key về mà không kiểm tra whitelist domain $\rightarrow$ trỏ về server của attacker.
+- **Algorithm confusion**: Ép server chuyển từ xác thực bất đối xứng (`RS256`) sang đối xứng (`HS256`) và lấy luôn Public Key của server làm secret key để ký.
+
 
 # __Lab: JWT authentication bypass via unverified signature__
 
