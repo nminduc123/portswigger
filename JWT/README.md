@@ -37,15 +37,6 @@
 
 ---
 
-## Tổng quan các dạng lỗ hổng JWT thường gặp:
-- **Unverified signature**: Server chỉ decode payload để lấy username mà hoàn toàn quên kiểm tra chữ ký.
-- **Flawed signature verification (`alg: none`)**: Server chấp nhận token không có chữ ký khi client đổi thuật toán thành `none`.
-- **Weak HMAC secret**: Server dùng secret key quá đơn giản (như `secret`, `123456`) $\rightarrow$ bị brute-force bằng hashcat để tìm ra key rồi tự ký token mới.
-- **JWK header injection**: Server tin tưởng và dùng luôn chiếc public key được nhúng trong tham số `jwk` ở header do client gửi lên.
-- **JKU header injection**: Server tự động truy cập vào URL trong tham số `jku` để tải public key về mà không kiểm tra whitelist domain $\rightarrow$ trỏ về server của attacker.
-- **Algorithm confusion**: Ép server chuyển từ xác thực bất đối xứng (`RS256`) sang đối xứng (`HS256`) và lấy luôn Public Key của server làm secret key để ký.
-
-
 # __Lab: JWT authentication bypass via unverified signature__
 
 Access lab, đăng nhập bằng account được cung cấp wiener:peter. Send req `/my-account` to Repeater 
